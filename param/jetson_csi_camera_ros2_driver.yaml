@@ -1,0 +1,6 @@
+/**:
+  ros__parameters:
+    ##### 카메라 관련 매개변수 #####
+    camera_id: 0      # 카메라 번호
+    image_width: 400  # 이미지 가로 픽셀 크기
+    image_height: 300 # 이미지 세로 픽셀 크기
