@@ -66,7 +66,7 @@ class CameraDriverNode(Node):
         self.get_logger().info("image_width: %s" % (_image_width))
         self.get_logger().info("image_height: %s" % (_image_height))
 
-        self.publisher_ = self.create_publisher(Image, "Image", 0)
+        self.publisher = self.create_publisher(Image, "Image", 0)
         timer_period = 0.001
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
@@ -85,7 +85,7 @@ class CameraDriverNode(Node):
             msg = self.br.cv2_to_imgmsg(frame, "bgr8")
             msg.header.frame_id = str(self.frame_id)
             msg.header.stamp = super().get_clock().now().to_msg()
-            self.publisher_.publish(msg)
+            self.publisher.publish(msg)
             self.get_logger().info(str(self.frame_id))
             self.frame_id += 1
         else:
