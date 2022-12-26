@@ -1,10 +1,10 @@
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy
 from rclpy.parameter import Parameter
 from sensor_msgs.msg import Image
 import cv2
 from cv_bridge import CvBridge
-import time
 
 
 def gstreamer_pipeline(
@@ -66,7 +66,13 @@ class CameraDriverNode(Node):
         self.get_logger().info("image_width: %s" % (_image_width))
         self.get_logger().info("image_height: %s" % (_image_height))
 
-        self.publisher = self.create_publisher(Image, "Image", 0)
+        qos_profile = QoSProfile(
+            reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT,
+            history=QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST,
+            depth=1,
+        )
+
+        self.image_publisher = self.create_publisher(Image, "Image", qos_profile)
         timer_period = 0.001
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
@@ -85,7 +91,7 @@ class CameraDriverNode(Node):
             msg = self.br.cv2_to_imgmsg(frame, "bgr8")
             msg.header.frame_id = str(self.frame_id)
             msg.header.stamp = super().get_clock().now().to_msg()
-            self.publisher.publish(msg)
+            self.image_publisher.publish(msg)
             self.get_logger().info(str(self.frame_id))
             self.frame_id += 1
         else:
