@@ -6,11 +6,6 @@ from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
-NAMESPACE = os.environ.get("ROS_NAMESPACE", "")
-
-# TODO : param 사용하는 launch랑 사용 안하는 launch 분리할지 말지 고민중...
-# (https://github.com/klintan/ros2_usb_camera/blob/foxy-devel/launch/usb_camera_component.launch.py)
-
 
 def generate_launch_description():
     # 카메라 publishing 노드
@@ -27,7 +22,6 @@ def generate_launch_description():
         default_value=jetson_csi_camera_ros2_driver_params,
     )
     jetson_csi_camera_ros2_driver = Node(
-        namespace=NAMESPACE,
         package="jetson_csi_camera_ros2_driver",
         executable="jetson_csi_camera_ros2_driver_node",
         name="jetson_csi_camera_ros2_driver_node",

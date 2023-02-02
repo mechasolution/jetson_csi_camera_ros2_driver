@@ -1,4 +1,4 @@
-/**:
+/jetson_csi_camera_ros2_driver_node:
   ros__parameters:
     ##### 카메라 관련 매개변수 #####
     camera_id: 0      # 카메라 번호
