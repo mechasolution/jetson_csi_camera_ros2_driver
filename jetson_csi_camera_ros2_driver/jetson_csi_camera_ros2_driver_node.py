@@ -9,9 +9,9 @@ from cv_bridge import CvBridge
 
 def gstreamer_pipeline(
     sensor_id=0,
-    width=600,
-    height=400,
-    framerate=30,
+    width=400,
+    height=300,
+    framerate=10,
     flip_method=0,
 ):
     return (
@@ -49,14 +49,14 @@ class CameraDriverNode(Node):
         )
         _image_width = (
             self.get_parameter_or(
-                "image_width", Parameter("image_width", Parameter.Type.INTEGER, 600)
+                "image_width", Parameter("image_width", Parameter.Type.INTEGER, 400)
             )
             .get_parameter_value()
             .integer_value
         )
         _image_height = (
             self.get_parameter_or(
-                "image_height", Parameter("image_height", Parameter.Type.INTEGER, 400)
+                "image_height", Parameter("image_height", Parameter.Type.INTEGER, 300)
             )
             .get_parameter_value()
             .integer_value
@@ -73,7 +73,7 @@ class CameraDriverNode(Node):
         )
 
         self.image_publisher = self.create_publisher(Image, "Image", qos_profile)
-        timer_period = 0.001
+        timer_period = 0.1
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
         self.cap = cv2.VideoCapture(
@@ -92,10 +92,11 @@ class CameraDriverNode(Node):
             msg.header.frame_id = str(self.frame_id)
             msg.header.stamp = super().get_clock().now().to_msg()
             self.image_publisher.publish(msg)
-            self.get_logger().info(str(self.frame_id))
+            # self.get_logger().info(str(self.frame_id))
             self.frame_id += 1
         else:
             self.get_logger().info("Fail to get video frame")
+            raise SystemExit
 
 
 def main(args=None):
@@ -106,6 +107,9 @@ def main(args=None):
 
     except KeyboardInterrupt:
         node.get_logger().info("Keyboard Interrupt (SIGINT)")
+
+    except SystemExit:
+        node.get_logger().info("System Exit")
 
     finally:
         node.destroy_node()
