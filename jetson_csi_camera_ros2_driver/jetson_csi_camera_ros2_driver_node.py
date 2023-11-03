@@ -61,10 +61,18 @@ class CameraDriverNode(Node):
             .get_parameter_value()
             .integer_value
         )
+        self.frame_id = (
+            self.get_parameter_or(
+                "frame_id", Parameter("frame_id", Parameter.Type.STRING, "camera_link")
+            )
+            .get_parameter_value()
+            .string_value
+        )
 
         self.get_logger().info("camera_id: %s" % (_camera_id))
         self.get_logger().info("image_width: %s" % (_image_width))
         self.get_logger().info("image_height: %s" % (_image_height))
+        self.get_logger().info("frame_id: %s" % (self.frame_id))
 
         self.image_publisher = self.create_publisher(
             Image, "Image", qos_profile_sensor_data
@@ -79,17 +87,14 @@ class CameraDriverNode(Node):
             cv2.CAP_GSTREAMER,
         )
         self.br = CvBridge()
-        self.frame_id = 0
 
     def timer_callback(self):
         ret, frame = self.cap.read()
         if ret:
             msg = self.br.cv2_to_imgmsg(frame, "bgr8")
-            msg.header.frame_id = str(self.frame_id)
+            msg.header.frame_id = self.frame_id
             msg.header.stamp = super().get_clock().now().to_msg()
             self.image_publisher.publish(msg)
-            # self.get_logger().info(str(self.frame_id))
-            self.frame_id += 1
         else:
             self.get_logger().info("Fail to get video frame")
             raise SystemExit
