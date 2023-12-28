@@ -1,7 +1,16 @@
 /jetson_csi_camera_ros2_driver_node:
   ros__parameters:
     ##### 카메라 관련 매개변수 #####
-    camera_id: 0          # 카메라 번호
-    image_width: 400      # 이미지 가로 픽셀 크기
-    image_height: 300     # 이미지 세로 픽셀 크기
+    camera_id: 0 # 카메라 번호
+    image_width: 400 # 이미지 가로 픽셀 크기
+    image_height: 300 # 이미지 세로 픽셀 크기
     frame_id: camera_link # SLAM
+    flip_method: 2 # 카메라 회전
+    # (0): 회전 없음
+    # (1): 반시계 방향으로 90도 회전
+    # (2): 180도 회전
+    # (3): 시계 방향으로 90도 회전
+    # (4): 수평 뒤집기
+    # (5): 오른쪽 위/왼쪽 아래 대각선으로 뒤집기
+    # (6): 수직 뒤집기
+    # (7): 왼쪽 위/아래로 뒤집기

@@ -68,11 +68,19 @@ class CameraDriverNode(Node):
             .get_parameter_value()
             .string_value
         )
+        _flip_method = (
+            self.get_parameter_or(
+                "flip_method", Parameter("flip_method", Parameter.Type.INTEGER, 0)
+            )
+            .get_parameter_value()
+            .integer_value
+        )
 
         self.get_logger().info("camera_id: %s" % (_camera_id))
         self.get_logger().info("image_width: %s" % (_image_width))
         self.get_logger().info("image_height: %s" % (_image_height))
         self.get_logger().info("frame_id: %s" % (self.frame_id))
+        self.get_logger().info("flip_method: %s" % (_flip_method))
 
         self.image_publisher = self.create_publisher(
             Image, "Image", qos_profile_sensor_data
@@ -82,7 +90,7 @@ class CameraDriverNode(Node):
 
         self.cap = cv2.VideoCapture(
             gstreamer_pipeline(
-                sensor_id=_camera_id, width=_image_width, height=_image_height
+                sensor_id=_camera_id, width=_image_width, height=_image_height, flip_method=_flip_method
             ),
             cv2.CAP_GSTREAMER,
         )
