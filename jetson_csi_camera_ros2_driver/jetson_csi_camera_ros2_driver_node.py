@@ -1,10 +1,10 @@
-import rclpy
-from rclpy.node import Node
-from rclpy.qos import qos_profile_sensor_data
-from rclpy.parameter import Parameter
-from sensor_msgs.msg import Image
 import cv2
+import rclpy
 from cv_bridge import CvBridge
+from rclpy.node import Node
+from rclpy.parameter import Parameter
+from rclpy.qos import qos_profile_sensor_data
+from sensor_msgs.msg import Image
 
 
 def gstreamer_pipeline(
@@ -90,7 +90,10 @@ class CameraDriverNode(Node):
 
         self.cap = cv2.VideoCapture(
             gstreamer_pipeline(
-                sensor_id=_camera_id, width=_image_width, height=_image_height, flip_method=_flip_method
+                sensor_id=_camera_id,
+                width=_image_width,
+                height=_image_height,
+                flip_method=_flip_method,
             ),
             cv2.CAP_GSTREAMER,
         )
